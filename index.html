@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>BOT MAHJONG BY KIPLI</title>
+
+<style>
+
+body{
+background:black;
+color:#00ff88;
+font-family:monospace;
+text-align:center;
+margin-top:70px;
+overflow:hidden;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+.box{
+background:#000;
+padding:30px;
+width:420px;
+margin:auto;
+border:1px solid #00ff88;
+box-shadow:0 0 20px #00ff88;
+}
+
+input{
+padding:10px;
+width:80%;
+background:black;
+color:#00ff88;
+border:1px solid #00ff88;
+}
+
+button{
+padding:10px 20px;
+margin-top:10px;
+cursor:pointer;
+}
+
+.progress{
+width:100%;
+background:#111;
+height:20px;
+margin-top:10px;
+}
+
+.bar{
+height:20px;
+width:0%;
+background:#00ff88;
+}
+
+.rtpbar{
+width:100%;
+background:#111;
+height:20px;
+margin-top:10px;
+}
+
+.rtpfill{
+height:20px;
+width:0%;
+background:#00ff88;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="box" id="login">
+
+<h2>BOT MAHJONG BY KIPLI</h2>
+
+<p>LOGIN / DAFTAR</p>
+
+<input id="username" placeholder="Masukan Username">
+
+<br>
+
+<button onclick="start()">START BOT</button>
+
+</div>
+
+<div class="box" id="bot" style="display:none">
+
+<h2>AI MAHJONG SCANNER</h2>
+
+<p id="user"></p>
+
+<p id="status">Scanning server...</p>
+
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+
+<div id="pola" style="margin-top:20px;text-align:left"></div>
+
+<p id="rtptext"></p>
+
+<div class="rtpbar">
+<div class="rtpfill" id="rtpbar"></div>
+</div>
+
+<p id="win"></p>
+
+<button onclick="generate()">Generate Pola</button>
+
+<button onclick="play()">MAIN SEKARANG</button>
+
+</div>
+
+<script>
+
+var polaList=[
+
+"30 Spin Turbo ON, 14 Manual OFF",
+"20 Spin Turbo ON, 10 Manual OFF",
+"10 Spin Turbo ON, 20 Manual OFF",
+"50 Spin Turbo ON, 10 Manual OFF",
+"40 Spin Turbo ON, 15 Manual OFF",
+"35 Spin Turbo ON, 12 Manual OFF",
+"25 Spin Turbo ON, 18 Manual OFF"
+
+]
+
+function start(){
+
+var user=document.getElementById("username").value
+
+if(user==""){
+alert("Masukan username dulu")
+return
+}
+
+document.getElementById("login").style.display="none"
+document.getElementById("bot").style.display="block"
+
+document.getElementById("user").innerText="Member : "+user
+
+scan()
+
+}
+
+function scan(){
+
+var bar=document.getElementById("bar")
+
+var progress=0
+
+var scan=setInterval(function(){
+
+progress+=4
+
+bar.style.width=progress+"%"
+
+if(progress>=100){
+
+clearInterval(scan)
+
+document.getElementById("status").innerText="Scan selesai"
+
+showPola()
+
+}
+
+},120)
+
+}
+
+function showPola(){
+
+var hasil=""
+
+var i=0
+
+function tampil(){
+
+if(i<5){
+
+var random=Math.floor(Math.random()*polaList.length)
+
+hasil+=(i+1)+". "+polaList[random]+"<br>"
+
+document.getElementById("pola").innerHTML=hasil
+
+i++
+
+setTimeout(tampil,300)
+
+}else{
+
+var rtp=Math.floor(Math.random()*5)+96
+
+var win=Math.floor(Math.random()*15)+85
+
+document.getElementById("rtptext").innerText="RTP LIVE : "+rtp+"%"
+
+document.getElementById("rtpbar").style.width=rtp+"%"
+
+document.getElementById("win").innerText="WINRATE : "+win+"%"
+
+}
+
+}
+
+tampil()
+
+}
+
+function generate(){
+
+document.getElementById("pola").innerHTML=""
+
+showPola()
+
+}
+
+function play(){
+
+window.open("https://bigbos79.pro/ishm","_blank")
+
+}
+
+setInterval(generate,30000)
+
+/* MATRIX BACKGROUND */
+
+var canvas=document.getElementById("matrix")
+
+var ctx=canvas.getContext("2d")
+
+canvas.height=window.innerHeight
+canvas.width=window.innerWidth
+
+var letters="01".split("")
+
+var fontSize=14
+
+var columns=canvas.width/fontSize
+
+var drops=[]
+
+for(var x=0;x<columns;x++)
+drops[x]=1
+
+function draw(){
+
+ctx.fillStyle="rgba(0,0,0,0.05)"
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
+ctx.fillStyle="#0f0"
+ctx.font=fontSize+"px monospace"
+
+for(var i=0;i<drops.length;i++){
+
+var text=letters[Math.floor(Math.random()*letters.length)]
+
+ctx.fillText(text,i*fontSize,drops[i]*fontSize)
+
+if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
+drops[i]=0
+
+drops[i]++
+
+}
+
+}
+
+setInterval(draw,33)
+
+</script>
+
+</body>
+
+</html>
